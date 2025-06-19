@@ -1,22 +1,34 @@
 package com.sobitd.project.turnquist.controller;
 
+import com.sobitd.project.turnquist.model.Video;
+import com.sobitd.project.turnquist.service.VideoService;
+
 import org.springframework.stereotype.Controller;
-import java.util.List;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+
+import java.util.List;
+
 
 @Controller
 public class HomeController {
-    record Video(String name) {}
+    private final VideoService videoService;
 
-    List<Video> videos = List.of(
-        new Video("Need HELP with your SPRING BOOT 3 App?"),
-        new Video("Don't do THIS to your own CODE!"),
-        new Video("SECRETS to fix BROKEN CODE!"));
+    public HomeController(VideoService videoService) {
+        this.videoService = videoService;
+    }
 
     @GetMapping("/")
     public String index(Model model) {
-        model.addAttribute("videos", videos);
+        model.addAttribute("videos", videoService.getVideos());
         return "index";
+    }
+
+    @PostMapping("/new-video")
+    public String newVideo(@ModelAttribute Video newVideo) {
+        videoService.create(newVideo);
+        return "redirect:/";
     }
 }
