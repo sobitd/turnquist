@@ -1,7 +1,11 @@
 package com.sobitd.project.turnquist.controller;
 
 import com.sobitd.project.turnquist.model.Video;
+import com.sobitd.project.turnquist.model.VideoSearch;
 import com.sobitd.project.turnquist.service.VideoService;
+import com.sobitd.project.turnquist.entity.VideoEntity;
+
+import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,6 +32,16 @@ public class HomeController {
     public String newVideo(@ModelAttribute Video newVideo) {
         videoService.create(newVideo);
         return "redirect:/";
+    }
+
+    @PostMapping("/multi-field-search")
+    public String multiFieldSearch( 
+        @ModelAttribute VideoSearch search, 
+        Model model) {
+            List<VideoEntity> searchResults = 
+                videoService.search(search);
+        model.addAttribute("videos", searchResults);
+        return "index";
     }
 
     @GetMapping("/react")
